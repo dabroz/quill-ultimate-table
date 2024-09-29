@@ -4,31 +4,28 @@ import TableSelection from './modules/table-selection'
 import TableOperationMenu from './modules/table-operation-menu'
 
 // import table node matchers
-import {
-  matchTableCell,
-  matchTableHeader,
-  matchTable
-} from './utils/node-matchers'
+import { matchTable, matchTableCell, matchTableHeader } from './utils/node-matchers'
 
 import { getEventComposedPath } from './utils/index'
+import {
+  cellId,
+  rowId,
+  TableBody,
+  TableCell,
+  TableCellLine,
+  TableCol,
+  TableColGroup,
+  TableContainer,
+  TableRow,
+  TableViewWrapper,
+} from './formats/table';
+import { getColToolCellIndexByBoundary, getColToolCellIndexesByBoundary } from "src/utils/table-util";
+import { ERROR_LIMIT } from "src/contants";
 
 const Module = Quill.import('core/module')
 const Delta = Quill.import('delta')
 
-import {
-  TableCol,
-  TableColGroup,
-  TableCellLine,
-  TableCell,
-  TableRow,
-  TableBody,
-  TableContainer,
-  TableViewWrapper,
-  rowId,
-  cellId
-} from './formats/table';
-
-class BetterTable extends Module {
+class BetterTablePlus extends Module {
   static register() {
     Quill.register(TableCol, true);
     Quill.register(TableColGroup, true);
@@ -37,7 +34,6 @@ class BetterTable extends Module {
     Quill.register(TableRow, true);
     Quill.register(TableBody, true);
     Quill.register(TableContainer, true);
-    Quill.register(TableViewWrapper, true);
     Quill.register(TableViewWrapper, true);
     // register customized Header，overwriting quill built-in Header
     // Quill.register('formats/header', Header, true);
@@ -119,7 +115,7 @@ class BetterTable extends Module {
           row: rowNode,
           cell: cellNode,
           left: evt.pageX,
-          top: evt.pageY
+          top: evt.pageY,
         }, quill, options.operationMenu)
       }
     }, false)
@@ -145,8 +141,8 @@ class BetterTable extends Module {
     // since only one matched bindings callback will excute.
     // expected my binding callback excute first
     // I changed the order of binding callbacks
-    let thisBinding = quill.keyboard.bindings['Backspace'].pop()
-    quill.keyboard.bindings['Backspace'].splice(0, 1, thisBinding)
+    let thisBinding = quill.keyboard.bindings.Backspace.pop()
+    quill.keyboard.bindings.Backspace.splice(0, 1, thisBinding)
 
     // add Matchers to match and render quill-better-table for initialization
     // or pasting
@@ -177,13 +173,14 @@ class BetterTable extends Module {
     const range = this.quill.getSelection(true)
     if (range == null) return
     let currentBlot = this.quill.getLeaf(range.index)[0]
-    let delta = new Delta().retain(range.index)
 
     if (isInTableCell(currentBlot)) {
+      // eslint-disable-next-line no-console
       console.warn(`Can not insert table into a table cell.`)
       return;
     }
 
+    let delta = new Delta().retain(range.index)
     delta.insert('\n')
     // insert table column
     delta = new Array(columns).fill('\n').reduce((memo, text) => {
@@ -194,7 +191,7 @@ class BetterTable extends Module {
     delta = new Array(rows).fill(0).reduce(memo => {
       let tableRowId = rowId()
       return new Array(columns).fill('\n').reduce((memo, text) => {
-        memo.insert(text, { 'table-cell-line': {row: tableRowId, cell: cellId()} });
+        memo.insert(text, { 'table-cell-line': { row: tableRowId, cell: cellId() } });
         return memo
       }, memo)
     }, delta)
@@ -203,13 +200,118 @@ class BetterTable extends Module {
     this.quill.setSelection(range.index + columns + 1, Quill.sources.API)
   }
 
-  showTableTools (table, quill, options) {
+  tableInsertColumn(columnType) {
+
+    const tableContainer = Quill.find(this.table)
+    const tableSelection = this.tableSelection;
+    const tableColumnTool = this.columnTool;
+    const columnToolCells = tableColumnTool.colToolCells();
+
+    let colIndex = getColToolCellIndexByBoundary(
+      columnToolCells,
+      tableSelection.boundary,
+      (cellRect, boundary) => {
+        return Math.abs(cellRect.x + cellRect.width - boundary.x1) <= ERROR_LIMIT;
+      },
+      tableSelection.quill.root.parentNode
+    );
+    const newColumn = tableContainer.insertColumn(
+      tableSelection.boundary,
+      colIndex,
+      columnType === "right",
+      tableSelection.quill.root.parentNode
+    );
+
+    tableColumnTool.updateToolCells();
+    tableSelection.quill.update(Quill.sources.USER);
+    tableSelection.quill.setSelection(tableSelection.quill.getIndex(newColumn[0]), 0, Quill.sources.SILENT);
+    tableSelection.setSelection(
+      newColumn[0].domNode.getBoundingClientRect(),
+      newColumn[0].domNode.getBoundingClientRect()
+    );
+  }
+
+  insertColumnLeft() {
+    this.tableInsertColumn("left");
+  }
+
+  insertColumnRight() {
+    this.tableInsertColumn("right");
+  }
+
+  tableInsertRow(rowType) {
+    const tableContainer = Quill.find(this.table);
+    const tableSelection = this.tableSelection;
+
+    const affectedCells = tableContainer.insertRow(
+      tableSelection.boundary,
+      rowType === "below",
+      tableSelection.quill.root.parentNode
+    );
+    tableSelection.quill.update(Quill.sources.USER);
+    tableSelection.quill.setSelection(tableSelection.quill.getIndex(affectedCells[0]), 0, Quill.sources.SILENT);
+    tableSelection.setSelection(
+      affectedCells[0].domNode.getBoundingClientRect(),
+      affectedCells[0].domNode.getBoundingClientRect()
+    );
+  }
+
+  insertRowAbove() {
+    this.tableInsertRow("above");
+  }
+
+  insertRowBelow() {
+    this.tableInsertRow("below");
+  }
+
+  deleteRow() {
+    const tableContainer = Quill.find(this.table);
+    const tableSelection = this.tableSelection;
+
+    tableContainer.deleteRow(tableSelection.boundary, tableSelection.quill.root.parentNode);
+    tableSelection.quill.update(Quill.sources.USER);
+    tableSelection.clearSelection();
+  }
+
+  deleteColumn() {
+    const tableContainer = Quill.find(this.table);
+    const tableSelection = this.tableSelection;
+    const tableColumnTool = this.columnTool;
+    const columnToolCells = tableColumnTool.colToolCells();
+
+    let colIndexes = getColToolCellIndexesByBoundary(
+      columnToolCells,
+      tableSelection.boundary,
+      (cellRect, boundary) => {
+        return cellRect.x + ERROR_LIMIT > boundary.x && cellRect.x + cellRect.width - ERROR_LIMIT < boundary.x1;
+      },
+      tableSelection.quill.root.parentNode
+    );
+
+    let isDeleteTable = tableContainer.deleteColumns(
+      tableSelection.boundary,
+      colIndexes,
+      tableSelection.quill.root.parentNode
+    );
+    if (!isDeleteTable) {
+      tableColumnTool.updateToolCells();
+      tableSelection.quill.update(Quill.sources.USER);
+      tableSelection.clearSelection();
+    }
+  }
+
+  deleteTable() {
+    const tableContainer = Quill.find(this.table);
+    tableContainer.tableDestroy();
+  }
+
+  showTableTools(table, quill, options) {
     this.table = table
     this.columnTool = new TableColumnTool(table, quill, options)
     this.tableSelection = new TableSelection(table, quill, options)
   }
 
-  hideTableTools () {
+  hideTableTools() {
     this.columnTool && this.columnTool.destroy()
     this.tableSelection && this.tableSelection.destroy()
     this.tableOperationMenu && this.tableOperationMenu.destroy()
@@ -220,7 +322,7 @@ class BetterTable extends Module {
   }
 }
 
-BetterTable.keyboardBindings = {
+BetterTablePlus.keyboardBindings = {
   'table-cell-line backspace': {
     key: 'Backspace',
     format: ['table-cell-line'],
@@ -228,10 +330,7 @@ BetterTable.keyboardBindings = {
     offset: 0,
     handler(range, context) {
       const [line, offset] = this.quill.getLine(range.index)
-      if (!line.prev || line.prev.statics.blotName !== 'table-cell-line') {
-        return false
-      }
-      return true
+      return !(!line.prev || line.prev.statics.blotName !== 'table-cell-line');
     },
   },
 
@@ -240,7 +339,8 @@ BetterTable.keyboardBindings = {
     format: ['table-cell-line'],
     collapsed: true,
     suffix: /^$/,
-    handler() {},
+    handler() {
+    },
   },
 
   'table-cell-line enter': {
@@ -288,7 +388,7 @@ BetterTable.keyboardBindings = {
       if (target && target.statics.blotName === 'table-view') {
         const targetCell = target.table().rows()[0].children.head
         const targetLine = targetCell.children.head
-        
+
         this.quill.setSelection(
           targetLine.offset(this.quill.scroll),
           0,
@@ -298,7 +398,7 @@ BetterTable.keyboardBindings = {
         return false
       }
       return true
-    }
+    },
   },
   'up-to-table': {
     key: 'ArrowUp',
@@ -309,7 +409,7 @@ BetterTable.keyboardBindings = {
         const rows = target.table().rows()
         const targetCell = rows[rows.length - 1].children.head
         const targetLine = targetCell.children.head
-        
+
         this.quill.setSelection(
           targetLine.offset(this.quill.scroll),
           0,
@@ -319,11 +419,11 @@ BetterTable.keyboardBindings = {
         return false
       }
       return true
-    }
-  }
+    },
+  },
 }
 
-function makeTableArrowHandler (up) {
+function makeTableArrowHandler(up) {
   return {
     key: up ? 'ArrowUp' : 'ArrowDown',
     collapsed: true,
@@ -339,19 +439,19 @@ function makeTableArrowHandler (up) {
 
       if (targetRow != null && targetRow.statics.blotName === 'table-row') {
         let targetCell = targetRow.children.head
-        let totalColspanOfTargetCell = parseInt(targetCell.formats()['colspan'], 10)
+        let totalColspanOfTargetCell = parseInt(targetCell.formats().colspan, 10)
         let cur = cell
-        let totalColspanOfCur = parseInt(cur.formats()['colspan'], 10)
+        let totalColspanOfCur = parseInt(cur.formats().colspan, 10)
 
         // get targetCell above current cell depends on colspan
         while (cur.prev != null) {
           cur = cur.prev
-          totalColspanOfCur += parseInt(cur.formats()['colspan'], 10)
+          totalColspanOfCur += parseInt(cur.formats().colspan, 10)
         }
-        
+
         while (targetCell.next != null && totalColspanOfTargetCell < totalColspanOfCur) {
           targetCell = targetCell.next
-          totalColspanOfTargetCell += parseInt(targetCell.formats()['colspan'], 10)
+          totalColspanOfTargetCell += parseInt(targetCell.formats().colspan, 10)
         }
 
         const index = targetCell.offset(this.quill.scroll)
@@ -379,11 +479,11 @@ function makeTableArrowHandler (up) {
   };
 }
 
-function isTableCell (blot) {
+function isTableCell(blot) {
   return blot.statics.blotName === TableCell.blotName
 }
 
-function isInTableCell (current) {
+function isInTableCell(current) {
   return current && current.parent
     ? isTableCell(current.parent)
       ? true
@@ -391,4 +491,4 @@ function isInTableCell (current) {
     : false
 }
 
-export default BetterTable;
+export default BetterTablePlus;

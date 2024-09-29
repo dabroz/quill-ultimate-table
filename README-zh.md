@@ -6,40 +6,35 @@
   <a href="https://www.npmjs.com/package/quill-better-table-plus"><img src="https://img.shields.io/npm/l/quill-better-table-plus.svg?sanitize=true" alt="License"></a>
 </p>
 
-[中文](https://github.com/seehar/quill-better-table-plus/blob/master/README-zh.md) | English
+中文 | [English](https://github.com/seehar/quill-better-table-plus/blob/master/README.md)
 
-> Note: This is an enhanced (Plus) version of the `quill-better-table` npm package. The original package has not been
-> maintained for a long time, and this enhanced version will be maintained and updated by me.
+> 注意：这是对 `quill-better-table` npm 包的增强版（Plus）。原始包已经很久没有维护，这个增强版将由我来维护和更新。
 
-# Summary
+# 简介
 
-`quill-better-table-plus` is an enhanced version of the `Quill` rich text editor plugin that provides more powerful and
-flexible table editing features.It enables users to easily create, edit and format tables, as well as perform more
-complex table operations.
+`quill-better-table-plus` 是一个增强版的 `Quill` 富文本编辑器插件，提供了更强大和灵活的表格编辑功能。它使用户能够轻松地创建、编辑和格式化表格，以及进行更复杂的表格操作。
 
-This package is an enhancement based on the latest available version of the original `quill-better-table` package,
-adding a number of new features and fixing a number of known issues to ensure that it is suitable for current
-environments and needs.
+这个包是基于原始 `quill-better-table` 包的最新可用版本进行的增强，增加了一些新功能，并修复了一些已知问题，以确保它适用于当前的环境和需求。
 
-## requirement
+## 必要条件
 
 [quilljs](https://github.com/quilljs/quill) v2.0.0-dev.3
 
-## Online Demo
+## 在线 Demo
 
 [quill-better-table-plus Codepen Demo](https://codepen.io/seehar/pen/yLQopvq)
 
-# Install
+# 安装
 
-You can install `quill-better-table-plus` via npm:
+你可以通过 npm 安装 `quill-better-table-plus`：
 
 ```shell
 npm install quill-better-table-plus
 ```
 
-# Use
+# 使用
 
-Import `Quill` and style dependencies
+导入 `Quill` 和样式依赖项
 
 ```html
 
@@ -89,28 +84,24 @@ window.onload = () => {
 }
 ```
 
-# Future Functions
+# 未来功能
 
-We plan to further enhance `quill-better-table-plus` by adding the following features in a future release:
+我们计划在未来的版本中添加以下功能来进一步增强 `quill-better-table-plus`：
 
-- [ ] **Adapts to multiple `table` formats**: Supports a wide range of directly copied and pasted `table` data with
-  styles and better parsing and rendering.
-- [ ] **Expose more `api`**: Provide more `api` for developers to use in order to quickly apply different features,
-  looks and styles.
-- [ ] **`Typescript` support**
+- [ ] **适配多种 `table` 格式**：支持多种直接复制粘贴的带样式的 `table` 数据，并且解析和渲染更优秀
+- [ ] **暴露更多的 `api`**：提供更多的 `api` 供开发者使用，以便快速应用不同的功能、外观和风格。
+- [ ] **`Typescript` 支持**
 
-We are working hard on these features and will gradually roll them out in future releases. Stay tuned!
+我们正在努力开发这些功能，并将在未来的版本中逐步推出。敬请期待！
 
-If you have any other feature suggestions or ideas, feel free to raise them in the issue, we'd love to hear your
-feedback and contributions.
+如果你有任何其他功能建议或想法，欢迎在 issue 中提出，我们非常乐意听取你的反馈和贡献。
 
-# Community
+# 社区
 
-Feel free to contribute code and submit issues. If you find any bugs, or have suggestions for improvements, please
-create an issue or submit a pull request.
+欢迎贡献代码和提交问题。如果你发现任何 bug，或者有任何改进建议，请创建一个 issue 或提交一个 pull 请求。
 
-> Developer note: node version: `12.x`, e.g. `12.22.12`.
+> 开发注意：node 版本：`12.x`, 比如：`12.22.12`
 
-# License
+# 许可证
 
 [MIT License](https://rmm5t.mit-license.org/)
