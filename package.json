@@ -1,10 +1,10 @@
 {
+  "name": "quill-ultimate-table",
+  "version": "1.0.0",
   "engines" : {
     "npm" : ">=10.5.0",
     "node" : ">=18.20.0"
   },
-  "name": "quill-better-table",
-  "version": "1.2.10",
   "description": "Module for better table in Quill, more useful features are supported.",
   "main": "dist/quill-better-table-plus.js",
   "scripts": {
@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/seehar/quill-better-table-plus.git"
+    "url": "git+https://github.com/dabroz/quill-ultimate-table.git"
   },
   "keywords": [
     "quill",
@@ -26,12 +26,13 @@
     "multiline",
     "quilltable"
   ],
-  "author": "seehar",
+  "author": "dabroz",
+  "contributors": ["soccerloway", "seehar"],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/seehar/quill-better-table-plus/issues"
+    "url": "https://github.com/dabroz/quill-ultimate-table/issues"
   },
-  "homepage": "https://github.com/seehar/quill-better-table-plus#readme",
+  "homepage": "https://github.com/dabroz/quill-ultimate-table#readme",
   "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.24.4",
@@ -48,7 +49,7 @@
     "less-loader": "^7.3.0",
     "mini-css-extract-plugin": "^2.8.1",
     "node-sass": "^9.0.0",
-    "quill": "^2.0.0",
+    "quill": ">= 2.0.0, <3",
     "sass-loader": "^14.1.1",
     "style-loader": "^4.0.0",
     "url-loader": "^4.1.1",
