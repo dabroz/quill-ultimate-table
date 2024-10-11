@@ -42,7 +42,7 @@ class BetterTablePlus extends Module {
   constructor(quill, options) {
     super(quill, options);
 
-    // handle click on quill-better-table
+    // handle click on quill-ultimate-table
     this.quill.root.addEventListener('click', (evt) => {
       // bugfix: evt.path is undefined in Safari, FF, Micro Edge
       const path = getEventComposedPath(evt)
@@ -52,7 +52,7 @@ class BetterTablePlus extends Module {
       const tableNode = path.filter(node => {
         return node.tagName &&
           node.tagName.toUpperCase() === 'TABLE' &&
-          node.classList.contains('quill-better-table')
+          node.classList.contains('quill-ultimate-table')
       })[0]
 
       if (tableNode) {
@@ -67,7 +67,7 @@ class BetterTablePlus extends Module {
       }
     }, false)
 
-    // handle right click on quill-better-table
+    // handle right click on quill-ultimate-table
     this.quill.root.addEventListener('contextmenu', (evt) => {
       if (!this.table) return true
       evt.preventDefault()
@@ -79,7 +79,7 @@ class BetterTablePlus extends Module {
       const tableNode = path.filter(node => {
         return node.tagName &&
           node.tagName.toUpperCase() === 'TABLE' &&
-          node.classList.contains('quill-better-table')
+          node.classList.contains('quill-ultimate-table')
       })[0]
 
       const rowNode = path.filter(node => {
@@ -144,7 +144,7 @@ class BetterTablePlus extends Module {
     let thisBinding = quill.keyboard.bindings.Backspace.pop()
     quill.keyboard.bindings.Backspace.splice(0, 1, thisBinding)
 
-    // add Matchers to match and render quill-better-table for initialization
+    // add Matchers to match and render quill-ultimate-table for initialization
     // or pasting
     quill.clipboard.addMatcher('td', matchTableCell)
     quill.clipboard.addMatcher('th', matchTableHeader)

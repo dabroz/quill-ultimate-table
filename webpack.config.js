@@ -137,8 +137,7 @@ module.exports = (env, argv) => {
       static: path.join(__dirname, './dist'),
       port: 8080,
       hot: false,
-      open: true,
-      openPage: "demo/demo.html",
+      open: "demo/demo.html",
     },
   }
 }

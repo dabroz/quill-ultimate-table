@@ -874,7 +874,7 @@ class TableContainer extends Container {
 }
 
 TableContainer.blotName = "table-container"
-TableContainer.className = "quill-better-table"
+TableContainer.className = "quill-ultimate-table"
 TableContainer.tagName = "TABLE"
 
 class TableViewWrapper extends Container {
@@ -900,7 +900,7 @@ class TableViewWrapper extends Container {
 }
 
 TableViewWrapper.blotName = "table-view"
-TableViewWrapper.className = "quill-better-table-wrapper"
+TableViewWrapper.className = "quill-ultimate-table-wrapper"
 TableViewWrapper.tagName = "DIV"
 
 TableViewWrapper.allowedChildren = [TableContainer]
