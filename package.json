@@ -6,7 +6,7 @@
     "node" : ">=18.20.0"
   },
   "description": "Module for better table in Quill, more useful features are supported.",
-  "main": "dist/quill-better-table-plus.js",
+  "main": "dist/quill-ultimate-table.js",
   "scripts": {
     "dev": "webpack-dev-server --config webpack.config.js --mode=development",
     "build": "npm run build:normal && npm run build:minimize",
@@ -33,7 +33,9 @@
     "url": "https://github.com/dabroz/quill-ultimate-table/issues"
   },
   "homepage": "https://github.com/dabroz/quill-ultimate-table#readme",
-  "dependencies": {},
+  "dependencies": {
+    "quill": ">= 2.0.0, <3"
+  },
   "devDependencies": {
     "@babel/core": "^7.24.4",
     "@babel/preset-env": "^7.24.4",
@@ -49,7 +51,6 @@
     "less-loader": "^7.3.0",
     "mini-css-extract-plugin": "^2.8.1",
     "node-sass": "^9.0.0",
-    "quill": ">= 2.0.0, <3",
     "sass-loader": "^14.1.1",
     "style-loader": "^4.0.0",
     "url-loader": "^4.1.1",
