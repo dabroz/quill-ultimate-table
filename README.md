@@ -83,7 +83,7 @@ window.onload = () => {
 
   document.body.querySelector('#insert-table')
     .onclick = () => {
-    let tableModule = quill.getModule('better-table-plus')
+    let tableModule = quill.getModule('ultimate-table')
     tableModule.insertTable(3, 3)
   }
 }

@@ -570,7 +570,7 @@ class TableContainer extends Container {
 
   tableDestroy() {
     const quill = Quill.find(this.scroll.domNode.parentNode)
-    const tableModule = quill.getModule("better-table-plus")
+    const tableModule = quill.getModule("ultimate-table")
     this.remove()
     tableModule.hideTableTools()
     quill.update(Quill.sources.USER)
@@ -882,7 +882,7 @@ class TableViewWrapper extends Container {
     super(scroll, domNode)
     const quill = Quill.find(scroll.domNode.parentNode)
     domNode.addEventListener('scroll', (e) => {
-      const tableModule = quill.getModule('better-table-plus')
+      const tableModule = quill.getModule('ultimate-table')
       if (tableModule.columnTool) {
         tableModule.columnTool.domNode.scrollLeft = e.target.scrollLeft
       }
@@ -927,14 +927,14 @@ TableCol.requiredContainer = TableColGroup
 function rowId() {
   const id = Math.random()
     .toString(36)
-    .slice(2, 6)
+    .slice(2, 8)
   return `row-${id}`
 }
 
 function cellId() {
   const id = Math.random()
     .toString(36)
-    .slice(2, 6)
+    .slice(2, 8)
   return `cell-${id}`
 }
 
